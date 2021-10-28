@@ -9,6 +9,7 @@ contract Faucet {
     //mapping for amount withdrawn and timestamp of withdrawal
     mapping(address => uint256) public amountWithdrawn;
     mapping(address => uint256) public lastWithdrawnAt;
+    mapping(address => uint256) public lastWithdrawnToday;
     bool private initialised = false;
 
     event Received(address sender, uint256 amount);
@@ -77,7 +78,7 @@ contract Faucet {
                 "Daily Limit Exceeded!"
             );
             require(
-                now.sub(lastWithdrawnAt[user]) >= 300,
+                now.sub(lastWithdrawnToday[user]) >= 300,
                 "Minimum threshold time not crossed!"
             );
         } else {
@@ -86,6 +87,7 @@ contract Faucet {
         }
         user.transfer(amount);
         amountWithdrawn[user] = amountWithdrawn[user].add(amount);
+        lastWithdrawnToday[user] = now;
         emit Transferred(user, amount);
     }
 }
