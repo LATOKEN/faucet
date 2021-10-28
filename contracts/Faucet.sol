@@ -4,6 +4,7 @@ import "./SafeMath.sol";
 
 contract Faucet {
     using SafeMath for uint256;
+
     uint256 public dailyLimit;
     address public owner;
     //mapping for amount withdrawn and timestamp of withdrawal
@@ -70,24 +71,25 @@ contract Faucet {
 
     function request(address payable user) external payable onlyOwner {
         uint256 amount = 1e16;
+        uint256 nowTime = block.timestamp;
         require(address(this).balance >= amount, "Insuficient funds!");
 
-        if (now.sub(lastWithdrawnAt[user]) <= 86400) {
+        if (nowTime.sub(lastWithdrawnAt[user]) <= 86400) {
             require(
                 amountWithdrawn[user].add(amount) <= dailyLimit,
                 "Daily Limit Exceeded!"
             );
             require(
-                now.sub(lastWithdrawnToday[user]) >= 300,
+                nowTime.sub(lastWithdrawnToday[user]) >= 300,
                 "Minimum threshold time not crossed!"
             );
         } else {
             amountWithdrawn[user] = 0;
-            lastWithdrawnAt[user] = now;
+            lastWithdrawnAt[user] = nowTime;
         }
         user.transfer(amount);
         amountWithdrawn[user] = amountWithdrawn[user].add(amount);
-        lastWithdrawnToday[user] = now;
+        lastWithdrawnToday[user] = nowTime;
         emit Transferred(user, amount);
     }
 }
