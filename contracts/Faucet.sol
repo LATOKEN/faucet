@@ -28,9 +28,14 @@ contract Faucet {
         _;
     }
 
+    modifier isInitialised() {
+        require(initialised, "Faucet: not initialised!");
+        _;
+    }
+
     function getAmountWithdrawn(address _user)
         external
-        view
+        view isInitialised
         returns (uint256 amount)
     {
         if (amountWithdrawn[_user] == 0) return 0;
@@ -39,18 +44,18 @@ contract Faucet {
 
     function getLastWithdrawnAt(address _user)
         external
-        view
+        view isInitialised
         returns (uint256 time)
     {
         if (lastWithdrawnAt[_user] == 0) return 0;
         time = lastWithdrawnAt[_user];
     }
 
-    function updateOwner(address _owner) external onlyOwner {
+    function updateOwner(address _owner) external onlyOwner isInitialised {
         owner = _owner;
     }
 
-    function updateDailyLimit(uint256 _dailyLimit) external onlyOwner {
+    function updateDailyLimit(uint256 _dailyLimit) external onlyOwner isInitialised {
         dailyLimit = _dailyLimit;
     }
 
@@ -62,14 +67,14 @@ contract Faucet {
     function adminWithdrawFunds(address payable user, uint256 amount)
         external
         payable
-        onlyOwner
+        onlyOwner isInitialised
     {
         require(address(this).balance >= amount, "Insuficient funds!");
         user.transfer(amount);
         emit Transferred(user, amount);
     }
 
-    function request(address payable user) external payable onlyOwner {
+    function request(address payable user) external payable isInitialised {
         uint256 amount = 1e16;
         uint256 nowTime = block.timestamp;
         require(address(this).balance >= amount, "Insuficient funds!");

@@ -38,10 +38,6 @@ contract('Faucet - [request]', async (accounts) => {
     assert.equal(balanceAfter.toString(), balanceBefore.add(web3.utils.toBN(1e16)).toString())
   })
 
-  it("only admin should call request method", async () => {
-    TruffleAssert.reverts(FaucetInstance.request(RecipientAddress, { from: RecipientAddress }), "Ownable: caller is not the owner")
-  })
-
   it("should revert if daily limit is exceeded", async () => {
     TruffleAssert.passes(await FaucetInstance.request(RecipientAddress))
     await advanceTime(300);
