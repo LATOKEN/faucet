@@ -1,12 +1,15 @@
 pragma solidity 0.6.4;
 
-import "./SafeMath.sol";
+import "./utils/SafeMath.sol";
+import "./utils/IERC20.sol";
 
 contract Faucet {
     using SafeMath for uint256;
 
-    uint256 public dailyLimit;
+    uint256 public dailyLimit = 3e16;
     address public owner;
+    uint256 public amountPerRequest = 1e16;
+    uint256 public minThresholdTime = 300;
     //mapping for amount withdrawn and timestamp of withdrawal
     mapping(address => uint256) public amountWithdrawn;
     mapping(address => uint256) public lastWithdrawnAt;
@@ -16,9 +19,8 @@ contract Faucet {
     event Received(address sender, uint256 amount);
     event Transferred(address user, uint256 amount);
 
-    function init(uint256 _limit) external {
+    function init() external {
         require(!initialised, "Already initialised!");
-        dailyLimit = _limit;
         owner = msg.sender;
         initialised = true;
     }
@@ -59,42 +61,32 @@ contract Faucet {
         dailyLimit = _dailyLimit;
     }
 
-    receive() external payable {
-        require(msg.sender == owner, "Ownable: caller is not the owner");
-        emit Received(msg.sender, msg.value);
+    function updateAmountPerRequest(uint256 _amount) external onlyOwner isInitialised {
+        amountPerRequest = _amount;
     }
 
-    function adminWithdrawFunds(address payable user, uint256 amount)
-        external
-        payable
-        onlyOwner isInitialised
-    {
-        require(address(this).balance >= amount, "Insuficient funds!");
-        user.transfer(amount);
-        emit Transferred(user, amount);
+    function updateMinThresholdTime(uint256 _time) external onlyOwner isInitialised {
+        minThresholdTime = _time;
     }
 
-    function request(address payable user) external payable isInitialised {
-        uint256 amount = 1e16;
+    function request(address user, address tokenAddress) external isInitialised {
         uint256 nowTime = block.timestamp;
-        require(address(this).balance >= amount, "Insuficient funds!");
-
         if (nowTime.sub(lastWithdrawnAt[user]) <= 86400) {
             require(
-                amountWithdrawn[user].add(amount) <= dailyLimit,
+                amountWithdrawn[user].add(amountPerRequest) <= dailyLimit,
                 "Daily Limit Exceeded!"
             );
             require(
-                nowTime.sub(lastWithdrawnToday[user]) >= 300,
+                nowTime.sub(lastWithdrawnToday[user]) >= minThresholdTime,
                 "Minimum threshold time not crossed!"
             );
         } else {
             amountWithdrawn[user] = 0;
             lastWithdrawnAt[user] = nowTime;
         }
-        user.transfer(amount);
-        amountWithdrawn[user] = amountWithdrawn[user].add(amount);
+        IERC20(tokenAddress).mint(user, amountPerRequest);
+        amountWithdrawn[user] = amountWithdrawn[user].add(amountPerRequest);
         lastWithdrawnToday[user] = nowTime;
-        emit Transferred(user, amount);
+        emit Transferred(user, amountPerRequest);
     }
 }

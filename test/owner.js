@@ -9,11 +9,12 @@ contract('Faucet - [owner]', async (accounts) => {
   let NewOwnerAddress = accounts[1];
 
   let newDailyLimit = web3.utils.toBN(2e16);
-  const limit = web3.utils.toBN(3e16);
+  let newAmountPerRequest = web3.utils.toBN(3e16);
+  let newMinThresholdTime = 500;
 
   beforeEach(async () => {
     FaucetInstance = await FaucetContract.new();
-    await FaucetInstance.init(limit);
+    await FaucetInstance.init();
   })
 
   it("should update new owner", async () => {
@@ -36,19 +37,23 @@ contract('Faucet - [owner]', async (accounts) => {
     TruffleAssert.reverts(FaucetInstance.updateDailyLimit(newDailyLimit, { from: accounts[2] }), "Ownable: caller is not the owner");
   })
 
-  it("should send LA to Faucet contract", async () => {
-    TruffleAssert.passes(await FaucetInstance.send(10, { from: OwnerAddress }));
+  it("should update amount per request", async()=>{
+    TruffleAssert.passes(await FaucetInstance.updateAmountPerRequest(newAmountPerRequest, { from: OwnerAddress }));
+    let amountPerRequest = await FaucetInstance.amountPerRequest();
+    assert.equal(amountPerRequest.toString(), newAmountPerRequest.toString())
   })
 
-  it("only owner could send ether to Faucet contract", async () => {
-    TruffleAssert.reverts(FaucetInstance.send(10, { from: accounts[2] }), "Ownable: caller is not the owner")
+  it("should revert if non owner updates amount per request", async () => {
+    TruffleAssert.reverts(FaucetInstance.updateAmountPerRequest(newAmountPerRequest, { from: accounts[2] }), "Ownable: caller is not the owner");
   })
 
-  it("should emit Recieved when recieved LA", async () => {
-    let tx = await FaucetInstance.send(10, { from: OwnerAddress });
-    TruffleAssert.eventEmitted(tx, "Received", ev => {
-      return ev.sender == OwnerAddress &&
-        ev.amount == 10
-    })
+  it("should update minimum threshold time", async()=>{
+    TruffleAssert.passes(await FaucetInstance.updateMinThresholdTime(newMinThresholdTime, { from: OwnerAddress }));
+    let updateMinThresholdTime = await FaucetInstance.updateMinThresholdTime();
+    assert.equal(updateMinThresholdTime.toString(), newMinThresholdTime.toString())
+  })
+
+  it("should revert if non owner updates minimum threshold time", async () => {
+    TruffleAssert.reverts(FaucetInstance.updateMinThresholdTime(newMinThresholdTime, { from: accounts[2] }), "Ownable: caller is not the owner");
   })
 })
