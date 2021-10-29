@@ -16,7 +16,6 @@ contract Faucet {
     mapping(address => uint256) public lastWithdrawnToday;
     bool private initialised = false;
 
-    event Received(address sender, uint256 amount);
     event Transferred(address user, uint256 amount);
 
     function init() external {

@@ -49,7 +49,7 @@ contract('Faucet - [owner]', async (accounts) => {
 
   it("should update minimum threshold time", async()=>{
     TruffleAssert.passes(await FaucetInstance.updateMinThresholdTime(newMinThresholdTime, { from: OwnerAddress }));
-    let updateMinThresholdTime = await FaucetInstance.updateMinThresholdTime();
+    let updateMinThresholdTime = await FaucetInstance.minThresholdTime();
     assert.equal(updateMinThresholdTime.toString(), newMinThresholdTime.toString())
   })
 

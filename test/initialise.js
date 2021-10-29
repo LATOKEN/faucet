@@ -26,4 +26,10 @@ contract('Faucet - [initialise]', async (accounts) => {
     assert.strictEqual(owner, ExpectedOwnerAddress);
   })
 
+  it("should revert if any method is called without initialising", async () => {
+    TruffleAssert.reverts(FaucetInstance.updateOwner(accounts[1]), "Faucet: not initialised!");
+    TruffleAssert.reverts(FaucetInstance.updateDailyLimit(100), "Faucet: not initialised!");
+    TruffleAssert.reverts(FaucetInstance.updateAmountPerRequest(100), "Faucet: not initialised!");
+    TruffleAssert.reverts(FaucetInstance.updateMinThresholdTime(100), "Faucet: not initialised!");
+  })
 })
