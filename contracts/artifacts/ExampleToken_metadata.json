@@ -9,48 +9,60 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
-						"name": "user",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "spender",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "value",
 						"type": "uint256"
 					}
 				],
-				"name": "Transferred",
+				"name": "Approval",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Transfer",
 				"type": "event"
 			},
 			{
 				"inputs": [],
-				"name": "amountPerRequest",
+				"name": "_minter",
 				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					}
-				],
-				"name": "amountWithdrawn",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -58,7 +70,31 @@
 			},
 			{
 				"inputs": [],
-				"name": "dailyLimit",
+				"name": "_owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					}
+				],
+				"name": "allowance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -73,34 +109,39 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_user",
+						"name": "spender",
 						"type": "address"
-					}
-				],
-				"name": "getAmountWithdrawn",
-				"outputs": [
+					},
 					{
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
+				"name": "approve",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_user",
+						"name": "account",
 						"type": "address"
 					}
 				],
-				"name": "getLastWithdrawnAt",
+				"name": "balanceOf",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "time",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -109,6 +150,30 @@
 			},
 			{
 				"inputs": [],
+				"name": "decimals",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "name_",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "symbol_",
+						"type": "string"
+					}
+				],
 				"name": "init",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -118,11 +183,49 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "",
+						"name": "to",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
-				"name": "lastWithdrawnAt",
+				"name": "mint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "symbol",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalSupply",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -137,101 +240,52 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "",
+						"name": "recipient",
 						"type": "address"
-					}
-				],
-				"name": "lastWithdrawnToday",
-				"outputs": [
+					},
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "minThresholdTime",
+				"name": "transfer",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "bool",
 						"name": "",
-						"type": "uint256"
+						"type": "bool"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "owner",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "user",
+						"name": "sender",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "tokenAddress",
+						"name": "recipient",
 						"type": "address"
-					}
-				],
-				"name": "request",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
+					},
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"name": "updateAmountPerRequest",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
+				"name": "transferFrom",
+				"outputs": [
 					{
-						"internalType": "uint256",
-						"name": "_dailyLimit",
-						"type": "uint256"
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
-				"name": "updateDailyLimit",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_time",
-						"type": "uint256"
-					}
-				],
-				"name": "updateMinThresholdTime",
-				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -239,11 +293,11 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_owner",
+						"name": "minter",
 						"type": "address"
 					}
 				],
-				"name": "updateOwner",
+				"name": "updateMinter",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -258,7 +312,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Faucet.sol": "Faucet"
+			"contracts/ExampleToken.sol": "ExampleToken"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -272,18 +326,11 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Faucet.sol": {
-			"keccak256": "0xed2b41ffc44259fe73c25427d1064b8f6f2995b9dd59944929cde28527e85832",
+		"contracts/ExampleToken.sol": {
+			"keccak256": "0xc7abe4acdd80c1380a83f8be342c4d82105bb18315fb9709d8694b552c01f76c",
 			"urls": [
-				"bzz-raw://b980e1b6000a13410c245225eb7ebe02ef74f432a088e50219e9b30cf3a9f003",
-				"dweb:/ipfs/QmXUPRAEiT6GvGH7NmrrBh7vrxrkr2MNUWyPhJCuJ2wzGk"
-			]
-		},
-		"contracts/utils/IERC20.sol": {
-			"keccak256": "0x46d7124ca3a0babbd2c0578cccf8b2e286aae98c421d85bd8f3b1fb0d5659cc6",
-			"urls": [
-				"bzz-raw://2049466b1e05154c6ab3da160c3a8ac135f92a7ce461a0079f50575b6e88f6e6",
-				"dweb:/ipfs/QmTewPfofJXe2gzygqLSKRXKQrBPDt34AHAorENBkFYEK7"
+				"bzz-raw://d75f8ee5473960d2cfddf7a5350f60b47a1a437ead167ae75ab8d540085fe381",
+				"dweb:/ipfs/Qma5joRoFW5yFcRS7dQXZUJCUYy4BA9XxpY5tsXgRrQgPt"
 			]
 		},
 		"contracts/utils/SafeMath.sol": {

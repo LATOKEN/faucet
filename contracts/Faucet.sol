@@ -6,10 +6,10 @@ import "./utils/IERC20.sol";
 contract Faucet {
     using SafeMath for uint256;
 
-    uint256 public dailyLimit = 3e16;
+    uint256 public dailyLimit;
     address public owner;
-    uint256 public amountPerRequest = 1e16;
-    uint256 public minThresholdTime = 300;
+    uint256 public amountPerRequest;
+    uint256 public minThresholdTime;
     //mapping for amount withdrawn and timestamp of withdrawal
     mapping(address => uint256) public amountWithdrawn;
     mapping(address => uint256) public lastWithdrawnAt;
@@ -21,6 +21,9 @@ contract Faucet {
     function init() external {
         require(!initialised, "Already initialised!");
         owner = msg.sender;
+        dailyLimit = 3e16;
+        amountPerRequest = 1e16;
+        minThresholdTime = 300;
         initialised = true;
     }
 
